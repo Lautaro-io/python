@@ -1,12 +1,13 @@
 import random
 import time 
-import io
-import asyncio
 import pyttsx3
 import pygame
 import shutil
 import os
-import threading 
+import dibujos as dib
+import dibujos as dib
+import micro as mic
+import threading
 
 ##ACLARACIONES
 #Para correr el juego es necesario instalar en consola las librerias pygame y pyttsx3 con un pip install nombre_libreria . 
@@ -18,46 +19,48 @@ nombre = ""
 global miedo
 miedo = 0
 global objetos_random
-objetos_random = ["paquete de cigarrillos", "Frasco", "Diario", "Jeringa", "Cuchillo ensangrentado", "Muñeca", "Reloj", "Máscara", "Radio", "ouija", "Collar", "Ojo", "Manchas", "Dientes", "muñeco budu", "carta", "un pajaro podrido", "cucarachas", "veneno"]
+objetos_random = ["paquete de cigarrillos vacio", "Frasco", "Diario", "Jeringa", "Cuchillo ensangrentado", "Muñeca", "Reloj", "Máscara", "Radio", "ouija", "Collar", "Ojo", "Manchas", "Dientes", "muñeco budu", "carta", "un pajaro podrido", "cucarachas", "veneno"]
 
 inventario = []
 
-def encontrar_objeto(objeto):
-    global inventario 
-    return inventario.append(objeto)
-    
-
-
-
 #Inicializador de motor de voz. 
-
 engine = pyttsx3.init()
 voices=  engine.getProperty('voices')
-engine.setProperty('voice', voices[3].id) # los [ numero] se deben cambiar acuerdo a las necesidades de su sistema, si su lenguaje predeterminado es distinto al espaniol debera ajustar el numero 
+engine.setProperty('voice', voices[0].id) # los [ numero] se deben cambiar acuerdo a las necesidades de su sistema, si su lenguaje predeterminado es distinto al espaniol debera ajustar el numero 
 engine.setProperty('language', 'es')
-engine.setProperty('rate', 190)     # Velocidad de habla (palabras por minuto)
+engine.setProperty('rate', 199)     # Velocidad de habla (palabras por minuto)
 engine.setProperty('volume', 0.9)
 engine.runAndWait()
 
 
-#Iniciamos la musica especificando la ruta. 
+#aIniciamos la musica especificando la ruta. 
 pygame.init()
-# Ruta del archivo de música
+#Ruta del archivo de música e Iniciar la reproducción de la música de fondo
 ruta_musica = "fondo.mp3"
-
-# #Iniciar la reproducción de la música de fondo
 pygame.mixer.music.load(ruta_musica)
 pygame.mixer.music.play(-1)
 pygame.mixer_music.set_volume(0.1)
 engine = pyttsx3.init()
 
 #cambiar el color de las letras de la consola
-os.system("color 0" + "5") 
-# os.system('mode con: cols=60 lines=30')
+os.system("color 0" + "4") 
+#os.system('mode con:fullscreen')
 
+
+def encontrar_objeto(objeto):
+    global inventario 
+    return inventario.append(objeto)
+    
 consola_ancho = shutil.get_terminal_size().columns
 
-def animacion(texto, velocidad=0.1):
+
+
+def hablar(texto):
+    talk = engine.say(texto)
+    engine.runAndWait()
+
+
+def animacion(texto, velocidad=0.03):
     
     for letra in texto:
         print(letra,end="", flush=True)
@@ -65,9 +68,7 @@ def animacion(texto, velocidad=0.1):
 
 
 def centrar_texto(texto):
-
     consola_ancho = shutil.get_terminal_size().columns
-
     espacios = (consola_ancho - len(texto)) // 2
     texto_centralizado = ' ' * espacios + texto
         
@@ -75,60 +76,48 @@ def centrar_texto(texto):
 
 
 
+
+
+def encontrar_cigarrillo():
+    print(f"{nombre} encuentra un cigarrillo")
+
+## en caso que diga que si,  hacer un print de que tu nivel de miedo bajo
+## el cigarrillo tien que bajar 50 pts¿
+
+
+
 def primera_decision():
     global nombre 
-    global miedo    # Volumen (0.0 a 1.0)
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print("")
-    print(centrar_texto("   /             (__)             \\")   )
-    print(centrar_texto("                  ,%;,"))
-    print(centrar_texto("                  ,%%,"))
-    print(centrar_texto("    ______________)(______________"))
-    print(centrar_texto("   /     [----  '{}']             \\"))
-    print(centrar_texto("  /________________________________\\"))
-    print(centrar_texto("  [________________________________]"))
-    print(centrar_texto("     \\ \\  / /            \\ \\  / /"))
-    print(centrar_texto("      \\ \\/ /              \\ \\/ /"))
-    print(centrar_texto("      _\\/ /________________\\ \\/_"))
-    print(centrar_texto("     [_/o/__________________\\o\\_]"))
-    print(centrar_texto("      / /\\ \\              / /\\ \\"))
-    print(centrar_texto("     lc/  \\_\\            /_/  \\_\\"))
-    print("")
-    print("")
-    print("")
-    print("")
-    print(f"{nombre} encuentra una linterna..")
+    global miedo  
+    print(f"En la penumbra de la casa abandonada, {nombre} avanzaba con cuidado por los pasillos polvorientos y crujientes. Cada paso resonaba ominosamente, aumentando su sensación de intriga y temor.  En el centro de una vieja mesa de madera, cubierta de una fina capa de polvo gris, descansaba un conjunto de objetos olvidados por el tiempo. Entre los objetos se destacaba una linterna oxidada, cuyo destello de metal y cristal parecía susurrarle al protagonista una promesa de seguridad en la oscuridad.")
     print("Linterna se ha agregado a tu inventario. ")
-    engine.say(f"{nombre} encuentra una linterna..")
-    engine.say("1 -- Presiona 1 para prender linterna. Presiona 2 para Seguir en la oscuridad")
-    engine.runAndWait()
+    dib.primer_dibujo()
+    hablar(f"En la penumbra de la casa abandonada, {nombre} avanzaba con cuidado por los pasillos polvorientos y crujientes. Cada paso resonaba ominosamente, aumentando su sensación de intriga y temor.  En el centro de una vieja mesa de madera, cubierta de una fina capa de polvo gris, descansaba un conjunto de objetos olvidados por el tiempo. Entre los objetos se destacaba una linterna oxidada, cuyo destello de metal y cristal parecía susurrarle al protagonista una promesa de seguridad en la oscuridad.")
+    hablar("-- Diga Encender prender linterna o diga seguir en Oscuridad para Seguir en la oscuridad")
     encontrar_objeto("linterna")
-    opcion = int(input("1 -- Prender linterna. 2 -- Seguir en la oscuridad. "))
-    if opcion == 1 :
+    opcion = mic.hablar()
+
+    if "encender" in opcion:
         print("Al encender la linterna, ilumina un pasillo oscuro y descubre una puerta secreta que conduce a una habitación oculta llena de antigüedades. Cuando entra a la habitacion, siente que algo lo toca ")
-        engine.say("Al encender la linterna, ilumina un pasillo oscuro y descubre una puerta secreta que conduce a una habitación oculta llena de antigüedades. Cuando entra a la habitacion, siente que algo lo toca")
-        engine.runAndWait()
+        hablar("Al encender la linterna, ilumina un pasillo oscuro y descubre una puerta secreta que conduce a una habitación oculta llena de antigüedades. Cuando entra a la habitacion, siente que algo lo toca")
+
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
         miedo += 50
-    elif opcion == 2 :
+    elif "oscuridad" in opcion:
         print(f"Decidió seguir en la oscuridad, pero tropezó con un objeto que hizo ruido, alertando a algo en la casa. Sintió que algo lo persiguió.")
-        engine.say(f"Decidió seguir en la oscuridad, pero tropezó con un objeto que hizo ruido, alertando a algo en la casa. Sintió que algo lo persiguió.")
-        engine.runAndWait()
+        hablar(f"Decidió seguir en la oscuridad, pero tropezó con un objeto que hizo ruido, alertando a algo en la casa. Sintió que algo lo persiguió.")
+        #engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo += 100
     else:
         print("Ingrese una opción correcta.")
-        engine.say("Ingrese una opción correcta.")
+        #engine.say("Ingrese una opción correcta.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
         primera_decision( )
-
+primera_decision()
 
 def segunda_decision():
     global miedo
@@ -137,40 +126,27 @@ def segunda_decision():
     print("")
     print("")
     print("")
-    print(centrar_texto("              ________"))            
-    print(centrar_texto("             / ______ \\"))
-    print(centrar_texto("             || _  _ ||"))
-    print(centrar_texto("             ||| || |||"))
-    print(centrar_texto("             |||_||_|||"))
-    print(centrar_texto("                 || _  _o|| (o)"))
-    print(centrar_texto("             ||| || |||"))
-    print(centrar_texto("                         |||_||_|||      ^~^  ,"))
-    print(centrar_texto("                         ||______||     ('Y') )"))
-    print(centrar_texto("                        /__________\\    /   \\/"))
-    print(centrar_texto("    ________|__________|__ (\\|||/) _________"))
-    print(centrar_texto("   hjw     /____________\\"))
-    print(centrar_texto("   `97     |____________|"))
+    dib.segundoDibujo()
     print("")
     print("")
     print("")
     print("")
-
     print(f"--Corriendo por su vida, {nombre} se mete en un pasillo y ve una puerta cerrada:")
     encontrar_objeto(random.choice(objetos_random))
     print("Has encontrado un objeto, mìra tu inventario . ")
     engine.say(f"--Corriendo por su vida, {nombre} se mete en un pasillo y ve una puerta cerrada:")
     engine.runAndWait()
-    engine.say("Presione 1 para abrir la puerta o 2 para buscar otra salida")
+    engine.say("Diga abrir la puerta o diga 'otra salida' para buscar otra salida")
     engine.runAndWait()
-    opcion = int(input("1 -- Abrir la puerta. 2 -- Buscar otra salida. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "abrir" in opcion:
         print(f"Al abrir la puerta, descubre una habitación sellada con símbolos extraños en las paredes. Dentro, encuentra un mapa que revela la ubicación de una posible salida pero donde estaria la salida la hoja se encuentra rota.")
         engine.say(f"Al abrir la puerta, descubre una habitación sellada con símbolos extraños en las paredes. Dentro, encuentra un mapa que revela la ubicación de una posible salida pero donde estaria la salida la hoja se encuentra rota.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
         miedo+=150
-    elif opcion == 2:
+    elif "salida" in opcion:
         print(f" Al buscar otra salida, encuentra una ventana rota que le permite escapar, pero se da cuenta demasiado tarde de que lo ha llevado más adentro del bosque y más lejos de la civilización.")
         engine.say(f" Al buscar otra salida, encuentra una ventana rota que le permite escapar, pero se da cuenta demasiado tarde de que lo ha llevado más adentro del bosque y más lejos de la civilización.")
         engine.runAndWait()
@@ -190,21 +166,7 @@ def tercera_decision():
     global miedo
     print("")
     print("")
-    print(centrar_texto(" __________________________________________________________"))
-    print(centrar_texto(" |     ,--.                                                |")          )
-    print(centrar_texto(" |    //^\\\\\   ,;;;,                        .            |"))
-    print(centrar_texto(" |   ((-_-))) (-_- ;                       /_\\            |"))
-    print(centrar_texto(" |    )))(((   >..'.    .:.     .--.      |SSt|            |"))
-    print(centrar_texto(" |   ((_._ )  /.   .|  :-_-;   /-_-))                      |"))
-    print(centrar_texto(" |   _))A ((_//| S ||  ,`-'.   ))-((                       |"))
-    print(centrar_texto(" |   `(    )`' |___|),;, C \\\\_/,`I ))                    |"))
-    print(centrar_texto(" |     \  /    | | |`' |___(/-'|___()  ,-.                 | "))
-    print(centrar_texto(" |      )(     | | |   | | |   | | |  (-_-)    _____       |"))
-    print(centrar_texto(" |     /__\\    |_|_|   |_|_|   |_|_|  (\\I/\\.__|A|R|T|   |"))
-    print(centrar_texto(" |     `''     `-'-'   `-'-'   `-'-'  `'-`'   `o' `o'      |"))
-    print(centrar_texto(" |___________________Familia Robinson______________________|"))
-    print(centrar_texto(" |_________________________1976____________________________|"))
-    print(centrar_texto(" |_________________________________________________________|"))
+    dib.tercerDibujo()
     print("")
     print("")
     print("")
@@ -212,10 +174,10 @@ def tercera_decision():
     print(f"Recorriendo la casa {nombre}se encuentra una fotografía") 
     engine.say(f"Recorriendo la casa {nombre}se encuentra una fotografía") 
     engine.runAndWait()
-    engine.say("presione 1 para examinar fotografia o 2 para dejar a un lado")
+    engine.say("Diga 'Examinar fotografia' para examinarla o 'tirar fotografia' para dejar a un lado")
     engine.runAndWait()
-    opcion = int(input("1-- Examinar la fotografía. 2-- Dejarla a un lado. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "examinar" in opcion :
         print("Fotografia fue agregada a inventario")
         encontrar_objeto("Fotografìa ")
         print("Al examinar la fotografía, descubre pistas sobre el pasado de la casa y la identidad de aquellos que la habitaban. Esto le ayuda a entender mejor el misterio que rodea al lugar.")
@@ -224,7 +186,7 @@ def tercera_decision():
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
         miedo+=50    
-    elif opcion == 2 :
+    elif "tirar" in opcion:
         print(f"Al dejar la fotografía de lado,{nombre} continúa su camino y se encuentra con una presencia fantasmal que parece estar relacionada con la imagen que ignoró.")
         engine.say(f"Al dejar la fotografía de lado,{nombre} continúa su camino y se encuentra con una presencia fantasmal que parece estar relacionada con la imagen que ignoró.")
         engine.runAndWait()
@@ -244,17 +206,7 @@ def cuarta_decision():
     print("")
     print("")
     print("")
-    print(centrar_texto("       _.--._  _.--._"))
-    print(centrar_texto(",-=.-\":;:;:;\\':;:;:;\"-._"))
-    print(centrar_texto("\\\\\\:;:;:;:;:;\\:;:;:;:;:;\\"))
-    print(centrar_texto(" \\\\\\:;:;:;:;:;\\:;:;:;:;:;\\"))
-    print(centrar_texto("  \\\\\\:;:;:;:;:;\\:;:;:;:;:;\\"))
-    print(centrar_texto("   \\\\\\:;:;:;:;:;\\:;::;:;:;:\\"))
-    print(centrar_texto("    \\\\\\;:;::;:;:;\\:;:;:;::;:\\"))
-    print(centrar_texto("     \\\\\\;;:;:_:--:\\:_:--:_;:;\\    "))
-    print(centrar_texto("      \\\\\\_.-\"      :      \"-._\\"))
-    print(centrar_texto("       \\`_..--\"\"--.;.--\"\"--.._= >"))
-    print(centrar_texto("        \"")  )
+    dib.cuarto_dibujo()
     print("")
     print("")
     print("")
@@ -266,17 +218,17 @@ def cuarta_decision():
     encontrar_objeto("Diario")
     engine.say("Encuentra un diario con páginas arrancadas")
     engine.runAndWait()
-    engine.say("presione 1 para buscar pistas . 2 para dejar a un lado ")
+    engine.say("Diga 'examinar' para buscar pistas o diga 'deshacer diario' para dejar a un lado ")
     engine.runAndWait()
-    opcion = int(input("1 -- Buscar pistas. 2 -- Dejar a un lado. "))
-    if opcion == 1:
+    opcion =mic.hablar()
+    if "examinar" in opcion :
         print(f"{nombre} busca pistas en las páginas restantes y descubre la verdad sobre una tragedia que ocurrió en la casa, lo que le permite resolver el misterio y liberar a las almas atormentadas que la habitaban.  ")
         engine.say(f"{nombre} busca pistas en las páginas restantes y descubre la verdad sobre una tragedia que ocurrió en la casa, lo que le permite resolver el misterio y liberar a las almas atormentadas que la habitaban.  ")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
         miedo+=100
-    elif opcion == 2:
+    elif "deshacer" in opcion:
         print("Decidió dejar el diario de lado, pero más tarde se arrepiente cuando se da cuenta de que las páginas arrancadas contenían información crucial para entender el peligro que enfrentaba.")
         engine.say("Decidió dejar el diario de lado, pero más tarde se arrepiente cuando se da cuenta de que las páginas arrancadas contenían información crucial para entender el peligro que enfrentaba.")
         engine.runAndWait()
@@ -289,59 +241,27 @@ def cuarta_decision():
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
-        cuarta_decision(   )
-    
+        cuarta_decision()
 
 def quinta_decision():
     global miedo
-    print(centrar_texto("                    []"))
-    print(centrar_texto("                    []"))
-    print(centrar_texto("                    []"))
-    print(centrar_texto("                    []"))
-    print(centrar_texto("                    []"))
-    print(centrar_texto("                    []"))
-    print(centrar_texto("   _______________  []         _________________"))
-    print(centrar_texto("   _______________) []        (_______________"))
-    print(centrar_texto("    !     !     !   []        '  !     !     !"))
-    print(centrar_texto("    !     !     !   []       ,!  !     !     !"))
-    print(centrar_texto("    !     !     !   []      ! !  !     !     !"))
-    print(centrar_texto("    !_____!_____!___[]_____'!_!__!_____!_____!_____"))
-    print(centrar_texto("                    []__,_!_!_!"))
-    print(centrar_texto("                    []_!__!_!|"))
-    print(centrar_texto("                   ,[]_!__!_!"))
-    print(centrar_texto("                 ,! []_!__!|"))
-    print(centrar_texto("               ,! ! []_!__!"))
-    print(centrar_texto("              ! ! ! []_!|"))
-    print(centrar_texto("             !! ! !|[]_|"))
-    print(centrar_texto("             !!!._|_[]"))
-    print(centrar_texto("             !!!|!_.[]"))
-    print(centrar_texto("             !|!_!__[]!."))
-    print(centrar_texto("             !_!_!__[]! !."))
-    print(centrar_texto("             !_!_!__[]! ! `."))
-    print(centrar_texto("              |!_!__|]! ! ! `."))
-    print(centrar_texto("               |_!__|]! ! ! ! `."))
-    print(centrar_texto("                 |____|_! ! ! !  `"))
-    print(centrar_texto("                   |____|_! ! !"))
-    print(centrar_texto("                    []____|_! !"))
-    print(centrar_texto("                    []______|_!"))
-    print(centrar_texto("                    []________|_!"))
-    print(centrar_texto("  __________________[]__________|____________________"))
+    dib.quinto_dibujo()
     encontrar_objeto(random.choice(objetos_random))
     print("Has encontrado un objeto, mìra tu inventario . ")
     print(f"{nombre} Escucha pasos en el piso de arriba:") 
     engine.say(f"{nombre} Escucha pasos en el piso de arriba:")
     engine.runAndWait()
-    engine.say("presione 1 para investigar o presione 2 para esconderse")
+    engine.say("diga 'investigar ruido' para investigar o diga 'esconderse del ruido'  para esconderse")
     engine.runAndWait()
-    opcion = int(input("1 -- Investigar. 2 -- Esconderse. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "investigar" in opcion :
         print(f"Decide investigar y descubre que los pasos eran de un animal herido que necesitaba ayuda. Al ayudarlo, el animal lo guía de regreso a la seguridad.")
         engine.say(f"Decide investigar y descubre que los pasos eran de un animal herido que necesitaba ayuda. Al ayudarlo, el animal lo guía de regreso a la seguridad.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
 
         miedo+=50
-    elif opcion == 2:
+    elif "esconderse" in opcion:
         print("Prefiere esconderse, pero luego se encuentra atrapado en una habitación sin salida, donde descubre que los pasos eran una distracción mientras algo más acechaba en la oscuridad.")
         engine.say("Prefiere esconderse, pero luego se encuentra atrapado en una habitación sin salida, donde descubre que los pasos eran una distracción mientras algo más acechaba en la oscuridad.")
         engine.runAndWait()
@@ -357,45 +277,23 @@ def quinta_decision():
 
 def sexta_decision():
     global miedo
-    print( centrar_texto("        _________________________"))
-    print( centrar_texto("       (, ______________________ )"))
-    print( centrar_texto("       | |                      ||"))
-    print(centrar_texto( "       | |          @@@@        ||            @@@@"))
-    print( centrar_texto("       | |        @@@@@@@       ||          @@@@@@@"))
-    print( centrar_texto("       | |         @@ - -       ||          - @@@@"))
-    print( centrar_texto("       | |          @  c/       ||         '_ @@@"))
-    print( centrar_texto("       | |        _@| |_        ||         __\@ \@"))
-    print(centrar_texto( "       | |       ( \ )/_\ /_    ||  _\\  (/ ) @\_/)"))
-    print( centrar_texto("       | |        \ \|) / \)    ||   |(__/ /     /|"))
-    print( centrar_texto("       | |        |\_/ ( -/     ||    \___/ ----/_|"))
-    print( centrar_texto("       | |        /     \       ||       ,:   '("))
-    print( centrar_texto("       | |       :    _/|       ||       |:     \\"))
-    print( centrar_texto("       | |       :      |       ||       |:      )"))
-    print( centrar_texto("       | |       :      |       ||       |:      |"))
-    print(centrar_texto( "       | |_______'____,_|_______||       |_____,_|"))
-    print( centrar_texto("   .---('________________________)--.     |   / ("))
-    print( centrar_texto("   |____          __________       _|     |  /\  )"))
-    print( centrar_texto("    |___|   -o-  |       |__|  -o- |      (  \| /"))
-    print(centrar_texto( "    |___|   -o-  |       |__|  -o- |      |  /'=. "))
-    print( centrar_texto("   |________|       |__|______|      '=>/  \\"))
-    print(centrar_texto("                                         /  \\ /|/"))
-    print( centrar_texto("                                       ,___/|") )
+    dib.sexto_dibujo()
     encontrar_objeto(random.choice(objetos_random))
     print("Has encontrado otro objeto, mìra tu inventario . ")
 
     print("Encuentra un espejo empañado:") 
     engine.say("Encuentra un espejo empañado:")
     engine.runAndWait()
-    engine.say("Presione 1 para limpiar el espejo o 2 para ignorar el espejo")
+    engine.say("Diga 'limpiar espejo' para  limpiar el espejo o diga 'ignorar espejo ' para ignorarlo ")
     engine.runAndWait()
-    opcion = int(input("1-- Limpiar el espejo. 2-- Ignorar espejo. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "limpiar" in opcion:
         print("Al limpiar el espejo, se enfrenta a su propio reflejo distorsionado y descubre que el espejo es una entrada a otro mundo donde debe enfrentar sus miedos internos para escapar.")
         engine.say("Al limpiar el espejo, se enfrenta a su propio reflejo distorsionado y descubre que el espejo es una entrada a otro mundo donde debe enfrentar sus miedos internos para escapar.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo+=50
-    elif opcion == 2:
+    elif "ignorar" in opcion:
         print
         engine.say(" Decidió ignorar el espejo, pero más tarde se encuentra atrapado en una ilusión creada por el espejo que lo hace dudar de su propia cordura.")
         engine.runAndWait()
@@ -407,33 +305,18 @@ def sexta_decision():
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         sexta_decision()
- 
+
 
 def septima_decision():
     global miedo
-    print( centrar_texto("     8 8 8 8                     ,ooo."))
-    print( centrar_texto("     8a8 8a8                    oP   ?b"))
-    print( centrar_texto("    d888a888zzzzzzzzzzzzzzzzzzzz8     8b"))
-    print( centrar_texto("     `\"\"^\"\"'                    ?o___oP'"))
-    print(centrar_texto( " __"))
-    print(centrar_texto("              /o \_____"))
-    print(centrar_texto( "              \__/-=\"=\"`"))
-    print( centrar_texto("            __"))
-    print(centrar_texto( "           / o\\"))
-    print( centrar_texto("           \_ /"))
-    print( centrar_texto("            <|"))
-    print(centrar_texto( "            <|"))
-    print(centrar_texto( "     jgs    <|"))
-    print( centrar_texto("            `") )
-
-
+    dib.septimo_dibujo()
     print("Encuentra una llave oxidada. ") 
     engine.say("Encuentra una llave oxidada. ")
     engine.runAndWait()
-    engine.say("Presione 1 para guardar la llave o presione 2 para tirar la llave")
+    engine.say("Diga 'guardar llave' para guardarla o diga 'tirar llave' para tirarla")
     engine.runAndWait()
-    opcion = int(input("1-- Guardar llave. 2-- Tirar la llave. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "guardar" in opcion:
         print("Llave ha sido agregada a su inventario. ")
         encontrar_objeto("Llave")
         print("Guarda la llave y más tarde descubre que abre una caja fuerte que contiene información vital para resolver el misterio de la casa.")
@@ -441,7 +324,7 @@ def septima_decision():
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo+=50
-    elif opcion == 2:
+    elif "tirar" in opcion:
         print("Decide tirar la llave, pero luego se da cuenta de que era la única manera de escapar de una habitación cerrada y encontrar ayuda.")
         engine.say("Decide tirar la llave, pero luego se da cuenta de que era la única manera de escapar de una habitación cerrada y encontrar ayuda.")
         engine.runAndWait()
@@ -455,40 +338,15 @@ def septima_decision():
 
 
 def octava_decision():
-    print(  centrar_texto(" __________________________________________________________________"))
-    print(  centrar_texto("/ \\-----     ---------  -----------     -------------- ------    ----\\"))
-    print(centrar_texto( "\\_/__________________________________________________________________/"))
-    print( centrar_texto( "|~ ~~ ~~~ ~ ~ ~~~ ~ _____.----------._ ~~~  ~~~~ ~~   ~~  ~~~~~ ~~~~|"))
-    print(centrar_texto( "|  _   ~~ ~~ __,---'_       \"         `. ~~~ _,--.  ~~~~ __,---.  ~~|"))
-    print(  centrar_texto("| | \\___ ~~ /      ( )   \"          \"   `-.,' (') \\~~ ~ (  / _\\ \\~~ |"))
-    print(  centrar_texto("|  \\    \\__/_   __(( _)_      (    \"   \"     (_\\_) \\___~ `-.___,'  ~|"))
-    print( centrar_texto("|~~ \\     (  )_(__)_|( ))  \"   ))          \"   |    \"  \\ ~~ ~~~ _ ~~|"))
-    print(  centrar_texto("|  ~ \\__ (( _( (  ))  ) _)    ((     \\\\//    \" |   \"    \\_____,' | ~|"))
-    print( centrar_texto( "|~~ ~   \\  ( ))(_)(_)_)|  \"    ))    //\\\\ \" __,---._  \"  \"   \"  /~~~|"))
-    print( centrar_texto("|    ~~~ |(_ _)| | |   |   \"  (   \"      ,-'^~~~ ~~~ `-.   ___  /~ ~ |"))
-    print( centrar_texto( "| ~~     |  |  |   |   _,--- ,--. _  \"  (~   ~~~~  ~~~ ) /___\\ \\~~ ~|"))
-    print(centrar_texto( "|  ~ ~~ /   |      _,----._,'`--'\\.`-._  `._~~_~__~_,-'  |H__|  \\ ~~|"))
-    print(  centrar_texto("|~~    / \"     _,-' / `\\ ,' / _'  \\`.---.._          __        \" \\~ |"))
-    print(centrar_texto(  "| ~~~ / /   .-' , / ' _,'_  -  _ '- _`._ `.`-._    _/- `--.   \" \" \\~|"))
-    print( centrar_texto( "|  ~ / / _-- `---,~.-' __   --  _,---.  `-._   _,-'- / ` \\ \\_   \" |~|"))
-    print( centrar_texto( "| ~ | | -- _    /~/  `-_- _  _,' '  \\ \\_`-._,-'  / --   \\  - \\_   / |"))
-    print( centrar_texto( "|~~ | \\ -      /~~| \"     ,-'_ /-  `_ ._`._`-...._____...._,--'  /~~|"))
-    print( centrar_texto( "| ~~\\  \\_ /   /~~/    ___  `---  ---  - - ' ,--.     ___        |~ ~|"))
-    print( centrar_texto( "|~   \\      ,'~~|  \" (o o)   \"         \" \" |~~~ \\_,-' ~ `.     ,'~~ |"))
-    print( centrar_texto( "| ~~ ~|__,-'~~~~~\\    \\\"/      \"  \"   \"    /~ ~~   O ~ ~~`-.__/~ ~~~|"))
-    print( centrar_texto( "|~~~ ~~~  ~~~~~~~~`.______________________/ ~~~    |   ~~~ ~~ ~ ~~~~|"))
-    print( centrar_texto( "|____~_____~__~_______~~_~____~~_____~~___~_~~___~\\_|_/ ~_____~___~__|"))
-    print( centrar_texto( "/ \\----- ----- ------------  ------- ----- -------  --------  -------\\"))
-    print( centrar_texto( "\\_/__________________________________________________________________/") )
-
+    dib.octavo_dibujo()
     global miedo
     print("Encuentra un mapa dibujado a mano") 
     engine.say("Encuentra un mapa dibujado a mano")
     engine.runAndWait()
-    engine.say("presione 1 para seguir el mapa o presione 2 para descartarlo")
+    engine.say("Diga 'seguir mapa 'para seguirlo  o diga 'tirar mapa' para descartarlo")
     engine.runAndWait()
-    opcion = int(input("1-- Seguir el mapa. 2--Descartar el mapa. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "seguir" in opcion:
         encontrar_objeto("Mapa")
         print("Mapa se ha agregado a tu inventario . ")
         print("Sigue el mapa y encuentra una salida segura del bosque, sin embargo se encuentra obstruída por escombros, pero también descubre un lugar secreto donde puede encontrar ayuda")
@@ -496,7 +354,7 @@ def octava_decision():
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo+=50
-    elif opcion == 2:
+    elif "tirar" in opcion :
         print("Descarta el mapa, pero más tarde se da cuenta de que habría llevado a una salida segura y rápida del peligro.")
         engine.say("Descarta el mapa, pero más tarde se da cuenta de que habría llevado a una salida segura y rápida del peligro.")
         engine.runAndWait()
@@ -508,59 +366,24 @@ def octava_decision():
         engine.runAndWait()
         octava_decision( )
 
- 
+
 
 def novena_decision():
-    print( centrar_texto( "                                    _______________________      |"))
-    print( centrar_texto( "                                  |  ________   ________  |     |"))
-    print( centrar_texto("                                  | |        | |    ___ | |     |"))
-    print(centrar_texto( "                                  | |        | |  ,',.('| |     |"))
-    print( centrar_texto("                                  | |        | | :  .'  | |     |"))
-    print( centrar_texto("                                  | |        | | :) _  (| |     |"))
-    print( centrar_texto("                                  | |        | |  `:_)_,| |     |"))
-    print(centrar_texto( "                                  | |________| |________| |     |"))
-    print(centrar_texto( "                                  |  ________   ________  |     |"))
-    print(centrar_texto( "                                  | |        | |        | |     |"))
-    print( centrar_texto("                                  | |        | |        | |     |"))
-    print(centrar_texto( "                                  | |        | |        | |     |"))
-    print( centrar_texto("                                  | |        | |        | |     |"))
-    print( centrar_texto( "                                  | |        | |        | |     |"))
-    print( centrar_texto("                                  | |________| |________| |     |"))
-    print( centrar_texto("                                  |_______________________|     |"))
-    print( centrar_texto("                                                                |"))
-    print( centrar_texto("                                                                |"))
-    print( centrar_texto("                   _____________________________________________|"))
-    print( centrar_texto("                                                                `."))
-    print(centrar_texto( "                                                                  `."))
-    print(centrar_texto( "                                                                    `."))
-    print(centrar_texto( "                                                                      `."))
-    print( centrar_texto("                     ..::::::::::::' .:::::::::::::::                   `."))
-    print( centrar_texto("                 ..:::::::::::::::' .:::::::::::::::'                     `"))
-    print(centrar_texto( "             ..:::::::::::::::::' .:::::::::::::::::"))
-    print(centrar_texto( "         ..::::::::::::::::::::' .:::::::::::::::::'"))
-    print( centrar_texto("     ..::::::::::::::::::::::' .:::::::::::::::::::"))
-    print(centrar_texto( " ..:::::::::::::::::::::::::' .:::::::::::::::::::'"))
-    print(centrar_texto( "..........................  ......................"))
-    print(centrar_texto( ":::::::::::::::::::::::::' .:::::::::::::::::::::'"))
-    print( centrar_texto(":::::::::::::::::::::::' .:::::::::::::::::::::::"))
-    print(centrar_texto( "::::::::::::::::::::::' .:::::::::::::::::::::::'"))
-    print( centrar_texto("::::::::::::::::::::' .:::::::::::::::::::::::::"))
-    print( centrar_texto(":::::::::::::::::::' .:::::::::::::::::::::::::'"))
-
+    dib.noveno_dibujo()
     global miedo
     print("Encuentra un sótano oscuro") 
     engine.say("Encuentra un sótano oscuro")
     engine.runAndWait()
-    engine.say("Presione 1 para bajar e investigar el sotano o 2 para evitar el sotano.")
+    engine.say("Diga 'investigar sotano' para bajar a investigar el sotano o diga 'evitar sotano' para evitarlo.")
     engine.runAndWait()
-    opcion = int(input("1-- Bajar e investigar el sòtano 2-- Evitar el sòtano. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "investigar" in opcion:
         print("Decide bajar y descubre un laboratorio abandonado donde se llevaban a cabo experimentos peligrosos. Allí encuentra una solución para deshacer una maldición que afectaba a la casa.")
         engine.say("Decide bajar y descubre un laboratorio abandonado donde se llevaban a cabo experimentos peligrosos. Allí encuentra una solución para deshacer una maldición que afectaba a la casa.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo+=100
-    elif opcion == 2:
+    elif "evitar" in opcion:
         print("Prefiere evitar el sótano, pero más tarde se da cuenta de que era la única ruta segura para escapar de la casa antes de que fuera demasiado tarde.")
         engine.say("Prefiere evitar el sótano, pero más tarde se da cuenta de que era la única ruta segura para escapar de la casa antes de que fuera demasiado tarde.")
         engine.runAndWait()
@@ -573,36 +396,23 @@ def novena_decision():
 
 def decima_decision():
     global miedo
-    print( centrar_texto("      _________      "))
-    print( centrar_texto("     /\ ()()()/\           (^)"))
-    print( centrar_texto("    /  \_\\_\\_\\__\         {(o)}"))
-    print(centrar_texto( "    \  /\        \         \O/"))
-    print( centrar_texto("     \/::\   dos  \          v"))
-    print(centrar_texto( "      \:::\ patitos\       ,---@"))
-    print(centrar_texto( "       \:::\        \      | . |_"))
-    print(centrar_texto( "        \:::\        \     |____7"))
-    print(centrar_texto( "         \:::\________\    |    |"))
-    print(centrar_texto( "          \::/        /    |    |"))
-    print(centrar_texto( "           \/________/     |    |"))
-    print( centrar_texto("                           |    |"))
-    print( centrar_texto("                           |    |"))
-    print( centrar_texto("                           |____|"))
+    dib.decimo_dibujo()
     print("Fosforos y vela se han agregado a tu inventario")
     encontrar_objeto("Fosforo")
     encontrar_objeto("Vela")
     print("Encuentra una vela y fósforos") 
     engine.say("Encuentra una vela y fósforos")
     engine.runAndWait()
-    engine.say("Presione 1 para encender la vela con los fosforos o 2 para guardar ")
+    engine.say("Diga 'encender' para encender la vela con los fosforos o diga 'guardar' para guardarla ")
     engine.runAndWait()
-    opcion = int(input("1 --Enciende la vela con los fosforos . 2 --Guarda ambos "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "encender" in opcion :
         print("Enciende la vela y los fósforos, lo que le permite explorar más a fondo la casa y encontrar una salida segura.")
         engine.say("Enciende la vela y los fósforos, lo que le permite explorar más a fondo la casa y encontrar una salida segura.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo+=50
-    elif opcion == 2:
+    elif "guardar" in opcion:
         print("Guarda la vela y los fósforos, pero luego se encuentra en completa oscuridad y sin poder ver dónde está, lo que lo hace vulnerable a los peligros que acechan en la casa.")
         engine.say("Guarda la vela y los fósforos, pero luego se encuentra en completa oscuridad y sin poder ver dónde está, lo que lo hace vulnerable a los peligros que acechan en la casa.")
         engine.runAndWait()
@@ -617,56 +427,28 @@ def decima_decision():
 
 def onceava_decision():
     global miedo
-    print( centrar_texto("         ___         _______________________________"))
-    print(centrar_texto( "      |                               |"))
-    print(centrar_texto( "      |                               |"))
-    print( centrar_texto("      |                               |"))
-    print( centrar_texto("      |   .|,        ,'drx.           |"))
-    print( centrar_texto("      |  -(_)-      |::|888L          |"))
-    print(centrar_texto( "      |   '|`       ;:::8888L         |"))
-    print(centrar_texto( "      |            ;::::Y8888L        |"))
-    print(centrar_texto( "      |------------|::::|88888L-------|"))
-    print(centrar_texto( "      |            ;:::::888888L      |"))
-    print(centrar_texto( "      |           ;::::::Y888888L     |"))
-    print( centrar_texto("      |           |::::::|888888'L.   |"))
-    print(centrar_texto( "      |           `-::::::888F'MMMML. |"))
-    print(centrar_texto( "      |               `-::F'MMMMMMMMML|"))
-    print(centrar_texto( "      |                   `\"**MMMMMMMM|"))
-    print( centrar_texto("      |                          `\"**M|"))
-    print( centrar_texto("      |                               |"))
-    print( centrar_texto("      |                               |"))
-    print( centrar_texto("      |    .;                         |"))
-    print( centrar_texto("      |                               |"))
-    print( centrar_texto("      |                               |"))
-    print( centrar_texto("      |_______________________________|"))
-    print( centrar_texto("       _/ ..\\"))
-    print( centrar_texto("      ( \\  0/__"))
-    print( centrar_texto("       \\    \\__)"))
-    print(centrar_texto( "       /     \\"))
-    print(centrar_texto( " jgs  /      _\\"))
-    print( centrar_texto("     `\"\"\"\"\"``")  )
-
     print("Ve una sombra moviendose rapidamente hacia una de las habitaciones.") 
+    dib.onceava_decision()
     engine.say("Ve una sombra moviendose rapidamente hacia una de las habitaciones.")
     engine.runAndWait()
-    engine.say("Presione 1 para investigar la habitacion donde fue la silueta o presione 2 para ignorar y continuar buscando la salida.")
+    engine.say("Diga  'investigar silueta' para investigar la habitacion donde fue la silueta o diga 'ignorar silueta' para ignorar y continuar buscando la salida.")
     engine.runAndWait()
-    opcion = int(input("1-- Investigar la habitacion donde fue la silueta. 2 -- Ignorarla y continuar buscando la salida. "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "investigar" in opcion:
         print("Decides seguir la sombra, intrigado por descubrir quién o qué está merodeando por la mansión. Con pasos cautelosos, te diriges hacia la habitación donde la sombra desapareció. Al abrir la puerta, te encuentras con una escena sorprendente: un antiguo estudio lleno de polvo y libros cubiertos de telarañas. Pero lo más impactante es lo que encuentras en el centro de la habitación: una figura encapuchada de pie frente a un antiguo escritorio")
         engine.say("Decides seguir la sombra, intrigado por descubrir quién o qué está merodeando por la mansión. Con pasos cautelosos, te diriges hacia la habitación donde la sombra desapareció. Al abrir la puerta, te encuentras con una escena sorprendente: un antiguo estudio lleno de polvo y libros cubiertos de telarañas. Pero lo más impactante es lo que encuentras en el centro de la habitación: una figura encapuchada de pie frente a un antiguo escritorio")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         miedo+=200
-    elif opcion == 2:
+    elif "ignorar" in opcion:
         print("Decides ignorar la sombra y continuar explorando la mansión en busca de otras pistas sobre su misterioso pasado. Sin embargo, a medida que avanzas por los pasillos oscuros, una sensación de malestar comienza a crecer en el fondo de tu mente.")
         engine.say("Decides ignorar la sombra y continuar explorando la mansión en busca de otras pistas sobre su misterioso pasado. Sin embargo, a medida que avanzas por los pasillos oscuros, una sensación de malestar comienza a crecer en el fondo de tu mente.")
         engine.runAndWait()
         miedo += 100
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
     else:
-        print("Ingrese una opcion valida! ")
-        engine.say("Ingrese una opcion valida! ")
+        print("Ingrese una opción válida! ")
+        engine.say("Ingrese una opción válida! ")
         engine.runAndWait()
         onceava_decision()
 
@@ -675,192 +457,36 @@ def finales():
     global miedo 
     print(miedo)
     if miedo < 600:
-        print( centrar_texto("              ,;;;,"))
-        print( centrar_texto("             ;;;;;;;"))
-        print(centrar_texto( "          .-'`\, '/_"))
-        print(centrar_texto( "        .'   \ (\"`(_)"))
-        print(centrar_texto( "       / `-,.'\ \_/"))
-        print(centrar_texto( "       \  \/\\  `--`"))
-        print(centrar_texto( "        \  \ \ "))
-        print(centrar_texto( "         / /| |"))
-        print(centrar_texto( "        /_/ |_|"))
-        print(centrar_texto( "  jgs  ( _\ ( _\  #:##        #:##        #:##         #:##"))
-        print(centrar_texto( "                        #:##        #:##        #:##"))
+        dib.espia()
         print(f"{nombre} utiliza inteligentemente los objetos que ha recolectado para descubrir la verdad detrás de los fenómenos paranormales en la casa y encontrar una forma de liberación.")
         engine.say(f"{nombre} utiliza inteligentemente los objetos que ha recolectado para descubrir la verdad detrás de los fenómenos paranormales en la casa y encontrar una forma de liberación.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
-        print( centrar_texto( "$$$$$$$$\       "))
-        print( centrar_texto("$$  _____|      "))
-        print( centrar_texto( "$$ |            "))
-        print( centrar_texto( "$$$$$\          "))
-        print(  centrar_texto("$$  __|         "))
-        print(  centrar_texto("$$ |            "))
-        print( centrar_texto( "$$ |            "))
-        print(  centrar_texto("\__|            "))
-        print( centrar_texto( "                "))
-        print( centrar_texto( "                "))
-        time.sleep(1)
-        print( centrar_texto("$$\\ "))
-        print(centrar_texto( "\\__|"))
-        print(centrar_texto( "$$\\ "))
-        print(centrar_texto( "$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("\\__|"))
-        print("    ")
-        print("    ")
-        time.sleep(1)
-        print(centrar_texto("$$\\   $$\\ "))
-        print(centrar_texto("$$$\\  $$ |"))
-        print(centrar_texto("$$$$\\ $$ |"))
-        print(centrar_texto("$$ $$\\$$ |"))
-        print(centrar_texto("$$ \\$$$$ |"))
-        print(centrar_texto("$$ |\\$$$ |"))
-        print(centrar_texto("$$ | \\$$ |"))
-        print(centrar_texto("\\__|  \\__|"))
-        print("           ")
-        print("           ")
-
-        time.sleep(40)
-
-       
+        dib.fin()
 
     elif miedo > 600 and miedo < 800:
         print(f"Después de enfrentarse a múltiples desafíos dentro de la casa abandonada, {nombre} finalmente logra desentrañar parte del misterio que la rodea. Descubre que la casa fue testigo de un antiguo pacto oscuro entre sus antiguos habitantes y seres sobrenaturales. Finalmente lo obligan a mantener la verdad en secreto y formar parte del pacto robandole su alma.")
         engine.say(f"Después de enfrentarse a múltiples desafíos dentro de la casa abandonada, {nombre} finalmente logra desentrañar parte del misterio que la rodea. Descubre que la casa fue testigo de un antiguo pacto oscuro entre sus antiguos habitantes y seres sobrenaturales. Finalmente lo obligan a mantener la verdad en secreto y formar parte del pacto robandole su alma.")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
-
-        print( centrar_texto( "$$$$$$$$\       "))
-        print( centrar_texto("$$  _____|      "))
-        print( centrar_texto( "$$ |            "))
-        print( centrar_texto( "$$$$$\          "))
-        print(  centrar_texto("$$  __|         "))
-        print(  centrar_texto("$$ |            "))
-        print( centrar_texto( "$$ |            "))
-        print(  centrar_texto("\__|            "))
-        print( centrar_texto( "                "))
-        print( centrar_texto( "                "))
-        time.sleep(1)
-        print( centrar_texto("$$\\ "))
-        print(centrar_texto( "\\__|"))
-        print(centrar_texto( "$$\\ "))
-        print(centrar_texto( "$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("\\__|"))
-        print("    ")
-        print("    ")
-        time.sleep(1)
-        print(centrar_texto("$$\\   $$\\ "))
-        print(centrar_texto("$$$\\  $$ |"))
-        print(centrar_texto("$$$$\\ $$ |"))
-        print(centrar_texto("$$ $$\\$$ |"))
-        print(centrar_texto("$$ \\$$$$ |"))
-        print(centrar_texto("$$ |\\$$$ |"))
-        print(centrar_texto("$$ | \\$$ |"))
-        print(centrar_texto("\\__|  \\__|"))
-        print("           ")
-        print("           ")
-
-
-        
-
+        dib.fin()
     elif miedo > 800:
         print(f"{nombre} decide tomar las pastillas encontradas al inicio  y seguir explorando la casa, sumergiéndose en un estado de miedo y paranoia extremo que lo consume por completo.  ")
         engine.say(f"{nombre} decide tomar las pastillas encontradas al inicio  y seguir explorando la casa, sumergiéndose en un estado de miedo y paranoia extremo que lo consume por completo.  ")
         engine.runAndWait()
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
-
-        print("           ")
-        print("           ")
-        print("           ")
-        print("           ")
-        print("           ")
-        print("           ")
-        print("           ")
-        print("           ")
-        print("           ")
-
-        print( centrar_texto( "$$$$$$$$\       "))
-        print( centrar_texto("$$  _____|      "))
-        print( centrar_texto( "$$ |            "))
-        print( centrar_texto( "$$$$$\          "))
-        print(  centrar_texto("$$  __|         "))
-        print(  centrar_texto("$$ |            "))
-        print( centrar_texto( "$$ |            "))
-        print(  centrar_texto("\__|            "))
-        print( centrar_texto( "                "))
-        print( centrar_texto( "                "))
-        time.sleep(1)
-        print( centrar_texto("$$\\ "))
-        print(centrar_texto( "\\__|"))
-        print(centrar_texto( "$$\\ "))
-        print(centrar_texto( "$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("$$ |"))
-        print( centrar_texto("\\__|"))
-        print("    ")
-        print("    ")
-        time.sleep(1)
-        print(centrar_texto("$$\\   $$\\ "))
-        print(centrar_texto("$$$\\  $$ |"))
-        print(centrar_texto("$$$$\\ $$ |"))
-        print(centrar_texto("$$ $$\\$$ |"))
-        print(centrar_texto("$$ \\$$$$ |"))
-        print(centrar_texto("$$ |\\$$$ |"))
-        print(centrar_texto("$$ | \\$$ |"))
-        print(centrar_texto("\\__|  \\__|"))
-        print("           ")
-        print("           ")
+        dib.fin()
 
 
-        
 
 
 def introduccion():
-    # print( centrar_texto("                *         .              *            _.---._      "))
-    print( centrar_texto("                              ___   .            ___.'       '.   *"))
-    print( centrar_texto("        .              _____[LLL]______________[LLL]_____     \\"))
-    print( centrar_texto("                      /     [LLL]              [LLL]     \     |"))
-    print( centrar_texto("                     /____________________________________\    |    ."))
-    print( centrar_texto("                      )==================================(    /"))
-    print( centrar_texto("     .      *         '|I .-. I .-. I .--. I .-. I .-. I|'  .'"))
-    print( centrar_texto("                  *    |I |+| I |+| I |. | I |+| I |+| I|-'`       *"))
-    print( centrar_texto("                       |I_|+|_I_|+|_I_|__|_I_|+|_I_|+|_I|      ."))
-    print( centrar_texto("              .       /_I_____I_____I______I_____I_____I_\""))
-    print( centrar_texto("                       )================================(   *"))
-    print( centrar_texto("       *         _     |I .-. I .-. I .--. I .-. I .-. I|          *"))
-    print( centrar_texto("                |u|  __|I |+| I |+| I |<>| I |+| I |+| I|    _         ."))
-    print( centrar_texto("           __   |u|_|uu|I |+| I |+| I |~ | I |+| I |+| I| _ |U|     _"))
-    print( centrar_texto("       .  |uu|__|u|u|u,|I_|+|_I_|+|_I_|__|_I_|+|_I_|+|_I||n|| |____|u|"))
-    print( centrar_texto("          |uu|uu|_,.-' /I_____I_____I______I_____I_____I\`'-. |uu u|u|__"))
-    print( centrar_texto("          |uu.-'`      #############(______)#############    `'-. u|u|uu|"))
-
-   
-    print( centrar_texto("  ~'^'~    _,'~'^'~    _( )_                         _( )_   `'-.        ~'^'~"))
-    print( centrar_texto("      _  .'            |___|                         |___|      ~'^'~     _"))
-    print( centrar_texto("    _( )_              |_|_|          () ()          |_|_|              _( )_"))
-    print( centrar_texto("    |___|/\/\/\/\/\/\/\|___|/\/\/\/\/\|| ||/\/\/\/\/\|___|/\/\/\/\/\/\/\|___|"))
-    print( centrar_texto("    |_|_|\/\/\/\/\/\/\/|_|_|\/\/\/\/\/|| ||\/\/\/\/\/|_|_|\/\/\/\/\/\/\/|_|_|"))
-    print( centrar_texto("    |___|/\/\/\/\/\/\/\|___|/\/\/\/\/\|| ||/\/\/\/\/\|___|/\/\/\/\/\/\/\|___|"))
-    print( centrar_texto("    |_|_|\/\/\/\/\/\/\/|_|_|\/\/\/\/\/[===]\/\/\/\/\/|_|_|\/\/\/\/\/\/\/|_|_|"))
-    print( centrar_texto("    |___|/\/\/\/\/\/\/\|___|/\/\/\/\/\|| ||/\/\/\/\/\|___|/\/\/\/\/\/\/\|___|"))
-    print( centrar_texto("~'^'~|_|_|\/\/\/\/\/\/\/|_|_|\/\/\/\/\/|| ||\/\/\/\/\/|_|_|\/\/\/\/\/\/\/|_lc|~'^'~"))
-    print( centrar_texto("   [_____]            [_____]                       [_____]            [_____] ") )
-
     print(centrar_texto(f"\n En una fría noche de invierno. {nombre} caminaba por un bosque cuando se topó con una casa abandonada. Movido por la curiosidad y el deseo de resguardarse del frío, decidió entrar en ella. Al explorar sus oscuros pasillos, encontró una mesa con varias pastillas sobre ella...  "))
+    print("")
+    dib.dibujo_introduccion()
     engine.say(f"\n En una fría noche de invierno,{nombre} caminaba por un bosque cuando se topó con una casa abandonada. Movido por la curiosidad y el deseo de resguardarse del frío, decidió entrar en ella. Al explorar sus oscuros pasillos, encontró una mesa con varias pastillas sobre ella...  ")
     engine.runAndWait()
     limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
-
-
-        
-    
 
 
 def historia():
@@ -872,17 +498,7 @@ def historia():
     print("")
     print("")
     print("")
-    print("")
-    print("")
-    print(centrar_texto("/$$$$$$$  /$$$$$$ /$$$$$$$$ /$$   /$$ /$$    /$$ /$$$$$$$$ /$$   /$$ /$$$$$$ /$$$$$$$   /$$$$$$"))                          
-    print(centrar_texto("| $$__  $$|_  $$_/| $$_____/| $$$ | $1$| $$   | $$| $$_____/| $$$ | $$|_  $$_/| $$__  $$ /$$__  $$"))
-    print(centrar_texto("| $$  \ $$  | $$  | $$      | $$$$| $$| $$   | $$| $$      | $$$$| $$  | $$  | $$  \ $$| $$  \ $$"))
-    print(centrar_texto("| $$$$$$$   | $$  | $$$$$   | $$ $$ $$|  $$ / $$/| $$$$$   | $$ $$ $$  | $$  | $$  | $$| $$  | $$"))
-    print(centrar_texto("| $$__  $$  | $$  | $$__/   | $$  $$$$ \  $$ $$/ | $$__/   | $$  $$$$  | $$  | $$  | $$| $$  | $$"))
-    print(centrar_texto("| $$  \ $$  | $$  | $$      | $$\  $$$  \  $$$/  | $$      | $$\  $$$  | $$  | $$  | $$| $$  | $$"))
-    print(centrar_texto("| $$$$$$$/ /$$$$$$| $$$$$$$$| $$ \  $$   \  $/   | $$$$$$$$| $$ \  $$ /$$$$$$| $$$$$$$/|  $$$$$$/"))
-    print(centrar_texto("|_______/ |______/|________/|__/  \__/    \_/    |________/|__/  \__/|______/|_______/  \______/"))
-    print("")
+    dib.bienvenida()
     print("")
     print("")
     print("")
@@ -906,7 +522,7 @@ def historia():
         print(centrar_texto(f"Miedo =  {miedo}                         Inventario = {inventario}"))
         print("-"*consola_ancho)
         time.sleep(1)
-        primera_decision()
+        (primera_decision())
         print("-"*consola_ancho)
         print(centrar_texto(f"Miedo =  {miedo}                         Inventario = {inventario}"))
         print("-"*consola_ancho)
@@ -935,6 +551,7 @@ def historia():
         print("-"*consola_ancho)
         print(centrar_texto(f"Miedo =  {miedo}                         Inventario = {inventario}"))
         print("-"*consola_ancho)
+
         time.sleep(1)
         septima_decision()
         print("-"*consola_ancho)
@@ -973,72 +590,19 @@ def historia():
 def menu():
     global limpiar_consola
     limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
-    print(centrar_texto("                   _.-,"))
-    print(centrar_texto("              _ .-'  / .._"))
-    print(centrar_texto("           .-:'/ - - \\:::::-."))
-    print(centrar_texto("         .::: '  e e  ' '-::::."))
-    print(centrar_texto("        ::::'(    ^    )_.::::::"))
-    print(centrar_texto("       ::::.' '.  o   '.::::'.'/_"))
-    print(centrar_texto("   .  :::.'       -  .::::'_   _.:"))
-    print(centrar_texto(" .-''---' .'|      .::::'   '''::::"))
-    print(centrar_texto("'. ..-:::'  |    .::::'        ::::"))
-    print(centrar_texto(" '.' ::::    \\ .::::'          ::::"))
-    print(centrar_texto("      ::::   .::::'           ::::"))
-    print(centrar_texto("       ::::.::::'._          ::::"))
-    print(centrar_texto("        ::::::' /  '-      .::::"))
-    print(centrar_texto("         '::::-/__    __.-::::'")     )
-    print(centrar_texto("           '-::::::::::::::-'"))
-    print(centrar_texto("                '''::::'''"))
-    print(" ")
-    print(" ")
+    dib.fantasmita()
     animacion(centrar_texto("Bienvenido a 'Elige tu propia aventura'")) 
-    engine.say(f"Bienvenido !¿ Estas listo para introducirte en un mundo lleno de aventuras?")
+    engine.say(f"Bienvenido en e")
     engine.runAndWait()
     limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
-
-    print(centrar_texto("     ,---.           ,---."))
-    print(centrar_texto("    / /\"`.\\.--\"\"\"--./,'\"\\ \\"))
-    print(centrar_texto("    \\ \\    _       _    / /"))
-    print(centrar_texto("     `./  / __   __ \\  \\,'"))
-    print(centrar_texto("      /    /_O)_(_O\\    \\"))
-    print(centrar_texto("      |  .-'  ___  `-.  |"))
-    print(centrar_texto("   .--|       \\_/       |--."))
-    print(centrar_texto(" ,'    \\   \\   |   /   /    `."))
-    print(centrar_texto("/       `.  `--^--'  ,'       \\"))
-    print(centrar_texto(".-\"\"\"\"\"\"-.    `--.___.--'     .-\"\"\"\"\"\"-."))
-    print(centrar_texto("| .---------\\         /----------------- \\         /------------. |"))
-    print(centrar_texto("| |          `-`--`--'                    `--'--'-'             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                      1- COMENZAR                         | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                         2- SALIR                            | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |                                                             | |"))
-    print(centrar_texto("| |_____________________________________________________________| |"))
-    print(centrar_texto("|_________________________________________________________________|"))
-    print(centrar_texto("  )__________|__|__________("))
-    print(centrar_texto(" |            ||            |"))
-    print(centrar_texto(" |____________||____________|"))
-    print(centrar_texto("   ),-----.(      ),-----.("))
-    print(centrar_texto(" ,'   ==.   \\    /  .==    `."))
-    print(centrar_texto("/            )  (            \\"))
-    print(centrar_texto("`==========='    `==========='"))
-
-
-    engine.say("Presione 1 para comenzar o presione 2 para salir")
+    dib.menu()
+    engine.say(f" diga para ' Quiero Empezar' para comenzar o Diga 'Quiero Salir' para salir")
     engine.runAndWait()
-    opcion = int(input(" "))
-    if opcion == 1:
+    opcion = mic.hablar()
+    if "empezar" in opcion:
         limpiar_consola = os.system('cls' if os.name == 'nt' else 'clear')
         historia()
     else:
         pass
-    
     
 menu()
